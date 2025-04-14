@@ -1,315 +1,1227 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>SambhavPath - Career Roadmap Explorer</title>
-  <style>
-    /* Existing CSS preserved from original file without changes */
-    * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-    }
-    body {
-        background-color: #0a0a1a;
-        color: #ffffff;
-        min-height: 100vh;
-        overflow-x: hidden;
-    }
-    .container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 2rem;
-        text-align: center;
-    }
-    .header {
-        margin-bottom: 3rem;
-    }
-    .header h1 {
-        font-size: 3rem;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        margin-bottom: 1rem;
-    }
-    .header p {
-        font-size: 1.2rem;
-        max-width: 700px;
-        margin: 0 auto;
-        color: #aab0c6;
-    }
-    .search-container {
-        position: relative;
-        max-width: 600px;
-        margin: 0 auto 4rem;
-    }
-    .search-bar {
-        width: 100%;
-        padding: 1.2rem 2rem;
-        font-size: 1.2rem;
-        border-radius: 50px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        backdrop-filter: blur(8px);
-        transition: all 0.3s ease;
-    }
-    .search-bar:focus {
-        outline: none;
-        background-color: rgba(255, 255, 255, 0.15);
-        box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.5);
-    }
-    .search-btn {
-        position: absolute;
-        right: 10px;
-        top: 50%;
-        transform: translateY(-50%);
-        padding: 0.7rem 1.5rem;
-        border-radius: 50px;
-        border: none;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        color: white;
-        font-weight: bold;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .search-btn:hover {
-        transform: translateY(-50%) scale(1.05);
-        box-shadow: 0 4px 20px rgba(79, 172, 254, 0.3);
-    }
-    .related-paths {
-        display: flex;
-        flex-wrap: wrap;
-        gap: 1rem;
-        justify-content: center;
-        margin: 0 auto 3rem;
-    }
-    .related-path-btn {
-        padding: 0.7rem 1.5rem;
-        border-radius: 50px;
-        border: none;
-        background-color: rgba(255, 255, 255, 0.1);
-        color: white;
-        cursor: pointer;
-        transition: all 0.3s ease;
-    }
-    .related-path-btn:hover {
-        background-color: rgba(255, 255, 255, 0.2);
-        transform: translateY(-3px);
-    }
-    .roadmap-container {
-        position: relative;
-        max-width: 800px;
-        margin: 0 auto;
-        padding: 2rem;
-        display: none;
-    }
-    .elevator-line {
-        position: absolute;
-        left: 50%;
-        top: 0;
-        width: 6px;
-        height: 100%;
-        background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
-        transform: translateX(-50%);
-        z-index: 1;
-    }
-    .milestone {
-        position: relative;
-        display: flex;
-        margin-bottom: 6rem;
-        z-index: 2;
-        opacity: 0;
-        transform: translateY(30px);
-        transition: all 0.6s ease;
-    }
-    .milestone.visible {
-        opacity: 1;
-        transform: translateY(0);
-    }
-    .milestone:nth-child(odd) {
-        flex-direction: row-reverse;
-    }
-    .milestone-content {
-        width: 45%;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        padding: 1.5rem;
-        backdrop-filter: blur(8px);
-        box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-        transition: all 0.3s ease;
-    }
-    .milestone-content:hover {
-        transform: scale(1.05);
-        background-color: rgba(255, 255, 255, 0.15);
-    }
-    .milestone-pin {
-        position: absolute;
-        left: 50%;
-        top: 1.5rem;
-        width: 30px;
-        height: 30px;
-        border-radius: 50%;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        transform: translateX(-50%);
-        z-index: 3;
-        box-shadow: 0 0 15px rgba(79, 172, 254, 0.7);
-    }
-    .progress-container {
-        position: sticky;
-        bottom: 20px;
-        background-color: rgba(10, 10, 26, 0.8);
-        padding: 1rem;
-        border-radius: 10px;
-        backdrop-filter: blur(8px);
-        z-index: 10;
-        display: flex;
-        align-items: center;
-        gap: 1rem;
-        margin-top: 2rem;
-    }
-    .progress-bar {
-        flex: 1;
-        height: 10px;
-        background-color: rgba(255, 255, 255, 0.1);
-        border-radius: 10px;
-        overflow: hidden;
-    }
-    .progress-fill {
-        height: 100%;
-        background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
-        border-radius: 10px;
-        width: 0%;
-        transition: width 0.5s ease;
-    }
-    .progress-text {
-        font-size: 0.9rem;
-        color: #aab0c6;
-        min-width: 80px;
-    }
-    .loading {
-        display: none;
-        margin: 2rem auto;
-        width: 50px;
-        height: 50px;
-        border: 5px solid rgba(255, 255, 255, 0.1);
-        border-radius: 50%;
-        border-top: 5px solid #4facfe;
-        animation: spin 1s linear infinite;
-    }
-    @keyframes spin {
-        0% { transform: rotate(0deg); }
-        100% { transform: rotate(360deg); }
-    }
-    .error-message {
-        display: none;
-        color: #ff6b6b;
-        margin: 2rem auto;
-        padding: 1rem;
-        background-color: rgba(255, 99, 99, 0.1);
-        border-radius: 10px;
-        max-width: 600px;
-    }
-  </style>
-</head>
-<body>
-  <div class="container">
-    <div class="header">
-      <h1>SambhavPath</h1>
-      <p>Discover your comprehensive career roadmap with detailed milestones and actionable steps.</p>
-    </div>
-    <div class="search-container">
-      <input type="text" class="search-bar" placeholder="Search a career path (e.g., Software Engineer, Doctor, Data Scientist)" id="searchInput">
-      <button class="search-btn" id="searchBtn">Search</button>
-    </div>
-    <div class="related-paths" id="relatedPaths"></div>
-    <div class="loading" id="loading"></div>
-    <div class="error-message" id="errorMessage"></div>
-    <div class="roadmap-container" id="roadmapContainer">
-      <div class="elevator-line"></div>
-      <div id="milestones"></div>
-      <div class="progress-container">
-        <div class="progress-bar">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-        <div class="progress-text" id="progressText">0% Complete</div>
-      </div>
-    </div>
-  </div>
-  <script>
-    const apiKey = "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";
-
-    const searchInput = document.getElementById("searchInput");
-    const milestones = document.getElementById("milestones");
-    const loading = document.getElementById("loading");
-    const roadmapContainer = document.getElementById("roadmapContainer");
-
-    async function searchRoadmap() {
-      const query = searchInput.value.trim();
-      if (!query) return;
-
-      loading.style.display = "block";
-      milestones.innerHTML = "";
-
-      const prompt = `I want to become or want to know about ${query}. Your response is to be filled up in a roadmap so provide me a complete roadmap and checkpoints. Include at least 20 bullet points with key steps, exams, certifications, degrees, skills, estimated timelines, tools, and alternative career options. Format each step clearly using bullet points or line breaks.`;
-
-      try {
-        const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Authorization": "Bearer " + apiKey,
-            "Content-Type": "application/json",
-            "HTTP-Referer": "https://your-netlify-site.netlify.app",
-            "X-Title": "SambhavPath AI Roadmap"
-          },
-          body: JSON.stringify({
-            model: "moonshot-v1-8k",
-            messages: [{ role: "user", content: prompt }]
-          })
-        });
-
-        const data = await response.json();
-        loading.style.display = "none";
-        roadmapContainer.style.display = "block";
-
-        if (!data || !data.choices || !data.choices[0]) {
-          milestones.innerHTML = "<p>Could not generate roadmap. Try again.</p>";
-          return;
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SambhavPath - Career Roadmap Explorer</title>
+    <style>
+        /* All your existing CSS styles remain the same */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #0a0a1a;
+            color: #ffffff;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            text-align: center;
+        }
+        
+        .header {
+            margin-bottom: 3rem;
+        }
+        
+        .header h1 {
+            font-size: 3rem;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+        }
+        
+        .header p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto;
+            color: #aab0c6;
+        }
+        
+        .search-container {
+            position: relative;
+            max-width: 600px;
+            margin: 0 auto 4rem;
+        }
+        
+        .search-bar {
+            width: 100%;
+            padding: 1.2rem 2rem;
+            font-size: 1.2rem;
+            border-radius: 50px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            backdrop-filter: blur(8px);
+            transition: all 0.3s ease;
+        }
+        
+        .search-bar:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.15);
+            box-shadow: 0 0 0 3px rgba(79, 172, 254, 0.5);
+        }
+        
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .search-btn:hover {
+            transform: translateY(-50%) scale(1.05);
+            box-shadow: 0 4px 20px rgba(79, 172, 254, 0.3);
+        }
+        
+        .related-paths {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin: 0 auto 3rem;
+        }
+        
+        .related-path-btn {
+            padding: 0.7rem 1.5rem;
+            border-radius: 50px;
+            border: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .related-path-btn:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        .roadmap-container {
+            position: relative;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 2rem;
+            display: none;
+        }
+        
+        .elevator-line {
+            position: absolute;
+            left: 50%;
+            top: 0;
+            width: 6px;
+            height: 100%;
+            background: linear-gradient(180deg, #4facfe 0%, #00f2fe 100%);
+            transform: translateX(-50%);
+            z-index: 1;
+        }
+        
+        .milestone {
+            position: relative;
+            display: flex;
+            margin-bottom: 6rem;
+            z-index: 2;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .milestone.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .milestone:nth-child(odd) {
+            flex-direction: row-reverse;
+        }
+        
+        .milestone-content {
+            width: 45%;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 1.5rem;
+            backdrop-filter: blur(8px);
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .milestone-content:hover {
+            transform: scale(1.05);
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+        
+        .milestone-pin {
+            position: absolute;
+            left: 50%;
+            top: 1.5rem;
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            transform: translateX(-50%);
+            z-index: 3;
+            box-shadow: 0 0 15px rgba(79, 172, 254, 0.7);
+        }
+        
+        .milestone-title {
+            font-size: 1.4rem;
+            margin-bottom: 0.5rem;
+            color: #ffffff;
+        }
+        
+        .milestone-description {
+            color: #aab0c6;
+            margin-bottom: 1rem;
+            line-height: 1.6;
+        }
+        
+        .milestone-link {
+            display: inline-block;
+            padding: 0.5rem 1rem;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 20px;
+            color: white;
+            text-decoration: none;
+            font-weight: bold;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+        }
+        
+        .milestone-link:hover {
+            box-shadow: 0 4px 15px rgba(79, 172, 254, 0.4);
+            transform: translateY(-2px);
+        }
+        
+        .progress-container {
+            position: sticky;
+            bottom: 20px;
+            background-color: rgba(10, 10, 26, 0.8);
+            padding: 1rem;
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+        
+        .progress-bar {
+            flex: 1;
+            height: 10px;
+            background-color: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+        
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, #4facfe 0%, #00f2fe 100%);
+            border-radius: 10px;
+            width: 0%;
+            transition: width 0.5s ease;
+        }
+        
+        .progress-text {
+            font-size: 0.9rem;
+            color: #aab0c6;
+            min-width: 80px;
+        }
+        
+        .loading {
+            display: none;
+            margin: 2rem auto;
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            border-top: 5px solid #4facfe;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .error-message {
+            display: none;
+            color: #ff6b6b;
+            margin: 2rem auto;
+            padding: 1rem;
+            background-color: rgba(255, 99, 99, 0.1);
+            border-radius: 10px;
+            max-width: 600px;
+        }
+        
+        .stars {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .star {
+            position: absolute;
+            background-color: white;
+            border-radius: 50%;
+            animation: twinkle linear infinite;
+        }
+        
+        @keyframes twinkle {
+            0% { opacity: 0; }
+            50% { opacity: 1; }
+            100% { opacity: 0; }
+        }
+        
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 2.2rem;
+            }
+            
+            .milestone {
+                flex-direction: column !important;
+                align-items: center;
+                text-align: center;
+            }
+            
+            .milestone-content {
+                width: 90%;
+            }
+            
+            .elevator-line {
+                left: 50%;
+            }
         }
 
-        const output = data.choices[0].message.content;
-        const lines = output.split(" ").filter(line => line.trim() !== "");
-        lines.forEach((line, index) => {
-          const div = document.createElement("div");
-          div.className = "milestone";
-          div.innerHTML = `<div class="milestone-content"><div class="milestone-pin"></div><h3 class="milestone-title">Step ${index + 1}</h3><p class="milestone-description">${line}</p></div>`;
-          milestones.appendChild(div);
-          setTimeout(() => {
-            div.classList.add("visible");
-          }, 100 * index);
+        /* New styles for detailed roadmap */
+        .milestone-substeps {
+            margin-top: 1rem;
+            padding-left: 1rem;
+            border-left: 2px solid rgba(79, 172, 254, 0.3);
+        }
+
+        .milestone-substep {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 1.2rem;
+        }
+
+        .milestone-substep:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #4facfe;
+            font-size: 1.2rem;
+        }
+
+        .milestone-timeframe {
+            font-size: 0.85rem;
+            color: #00f2fe;
+            margin-top: 0.3rem;
+            font-style: italic;
+        }
+
+        .milestone-importance {
+            display: inline-block;
+            padding: 0.2rem 0.5rem;
+            background-color: rgba(79, 172, 254, 0.2);
+            border-radius: 4px;
+            font-size: 0.8rem;
+            margin-top: 0.3rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="stars"></div>
+    
+    <div class="container">
+        <div class="header">
+            <h1>SambhavPath</h1>
+            <p>Discover your comprehensive career roadmap with detailed milestones and actionable steps.</p>
+        </div>
+        
+        <div class="search-container">
+            <input type="text" class="search-bar" placeholder="Search a career path (e.g., Software Engineer, Doctor, Data Scientist)" id="searchInput">
+            <button class="search-btn" id="searchBtn">Search</button>
+        </div>
+        
+        <div class="related-paths" id="relatedPaths"></div>
+        
+        <div class="loading" id="loading"></div>
+        
+        <div class="error-message" id="errorMessage"></div>
+        
+        <div class="roadmap-container" id="roadmapContainer">
+            <div class="elevator-line"></div>
+            <div id="milestones"></div>
+            
+            <div class="progress-container">
+                <div class="progress-bar">
+                    <div class="progress-fill" id="progressFill"></div>
+                </div>
+                <div class="progress-text" id="progressText">0% Complete</div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+        // Comprehensive mock data for detailed career roadmaps
+        const careerData = {
+            "software engineer": {
+                "mainPath": "Software Engineer",
+                "relatedPaths": [
+                    "Frontend Developer",
+                    "Backend Developer",
+                    "Full Stack Engineer",
+                    "DevOps Engineer",
+                    "Machine Learning Engineer"
+                ],
+                "milestones": [
+                    {
+                        "title": "Fundamentals of Programming",
+                        "description": "Learn the basics of programming concepts and logic",
+                        "substeps": [
+                            "Learn basic programming concepts (variables, loops, conditionals)",
+                            "Understand algorithms and data structures basics",
+                            "Practice problem-solving on platforms like HackerRank",
+                            "Complete at least 20 beginner-level coding challenges"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Computer_programming",
+                        "completed": true
+                    },
+                    {
+                        "title": "Core Computer Science",
+                        "description": "Master fundamental computer science concepts",
+                        "substeps": [
+                            "Study data structures (arrays, linked lists, trees, graphs)",
+                            "Learn algorithms (sorting, searching, recursion)",
+                            "Understand time and space complexity (Big O notation)",
+                            "Practice implementing common algorithms"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Computer_science",
+                        "completed": true
+                    },
+                    {
+                        "title": "Choose a Programming Language",
+                        "description": "Select and master a primary programming language",
+                        "substeps": [
+                            "Research popular languages (Python, JavaScript, Java, C++, etc.)",
+                            "Select based on career goals and industry demand",
+                            "Complete an in-depth course on the chosen language",
+                            "Build small projects to apply knowledge"
+                        ],
+                        "timeframe": "2-4 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Programming_language",
+                        "completed": false
+                    },
+                    {
+                        "title": "Version Control Systems",
+                        "description": "Learn to use Git and GitHub for version control",
+                        "substeps": [
+                            "Understand basic Git commands (commit, push, pull, branch)",
+                            "Learn GitHub workflow and collaboration",
+                            "Practice contributing to open source projects",
+                            "Understand merge conflicts and resolution"
+                        ],
+                        "timeframe": "1-2 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Git",
+                        "completed": false
+                    },
+                    {
+                        "title": "Software Development Methodologies",
+                        "description": "Learn about development processes and teamwork",
+                        "substeps": [
+                            "Study Agile and Scrum methodologies",
+                            "Understand CI/CD pipelines",
+                            "Learn about test-driven development",
+                            "Practice pair programming"
+                        ],
+                        "timeframe": "2-3 months",
+                        "importance": "Medium",
+                        "link": "https://en.wikipedia.org/wiki/Agile_software_development",
+                        "completed": false
+                    },
+                    {
+                        "title": "Specialization Path",
+                        "description": "Choose and pursue a specialization area",
+                        "substeps": [
+                            "Frontend: HTML, CSS, JavaScript, React/Angular",
+                            "Backend: Node.js, Django, Spring Boot, databases",
+                            "Mobile: Swift, Kotlin, React Native, Flutter",
+                            "Data Science: Python, R, machine learning",
+                            "DevOps: Docker, Kubernetes, cloud platforms"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Software_engineering",
+                        "completed": false
+                    },
+                    {
+                        "title": "Build Portfolio Projects",
+                        "description": "Create substantial projects to showcase skills",
+                        "substeps": [
+                            "Develop 3-5 complete applications",
+                            "Include projects demonstrating different skills",
+                            "Deploy projects to make them publicly accessible",
+                            "Document code and create README files"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Portfolio",
+                        "completed": false
+                    },
+                    {
+                        "title": "Prepare for Technical Interviews",
+                        "description": "Master coding interview techniques",
+                        "substeps": [
+                            "Practice algorithm problems daily",
+                            "Study system design concepts",
+                            "Mock interviews with peers",
+                            "Learn behavioral interview techniques"
+                        ],
+                        "timeframe": "2-3 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Technical_interview",
+                        "completed": false
+                    },
+                    {
+                        "title": "Job Search Strategy",
+                        "description": "Develop and execute job search plan",
+                        "substeps": [
+                            "Optimize LinkedIn and resume",
+                            "Network with professionals in the field",
+                            "Apply to entry-level positions",
+                            "Prepare for salary negotiations"
+                        ],
+                        "timeframe": "1-3 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Job_hunting",
+                        "completed": false
+                    },
+                    {
+                        "title": "First Professional Role",
+                        "description": "Begin career as a professional software engineer",
+                        "substeps": [
+                            "Complete onboarding process",
+                            "Establish relationships with team members",
+                            "Set up professional development goals",
+                            "Seek mentorship opportunities"
+                        ],
+                        "timeframe": "Ongoing",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Software_engineer",
+                        "completed": false
+                    },
+                    {
+                        "title": "Continuous Learning",
+                        "description": "Stay updated with industry trends and technologies",
+                        "substeps": [
+                            "Attend tech conferences and meetups",
+                            "Take advanced courses and certifications",
+                            "Read technical blogs and books",
+                            "Contribute to open source projects"
+                        ],
+                        "timeframe": "Ongoing",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Continuing_education",
+                        "completed": false
+                    }
+                ]
+            },
+            "doctor": {
+                "mainPath": "Medical Doctor",
+                "relatedPaths": [
+                    "Surgeon",
+                    "Pediatrician",
+                    "Cardiologist",
+                    "Neurologist",
+                    "Psychiatrist"
+                ],
+                "milestones": [
+                    {
+                        "title": "High School Preparation",
+                        "description": "Lay the foundation for medical studies",
+                        "substeps": [
+                            "Excel in science subjects (biology, chemistry, physics)",
+                            "Develop strong study habits",
+                            "Volunteer in healthcare settings",
+                            "Research medical career options"
+                        ],
+                        "timeframe": "4 years",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Secondary_education",
+                        "completed": true
+                    },
+                    {
+                        "title": "Undergraduate Education",
+                        "description": "Complete pre-medical requirements",
+                        "substeps": [
+                            "Earn bachelor's degree (typically in sciences)",
+                            "Maintain high GPA (3.5+ recommended)",
+                            "Complete pre-med coursework (biology, chemistry, etc.)",
+                            "Gain research or clinical experience"
+                        ],
+                        "timeframe": "4 years",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Pre-medical",
+                        "completed": true
+                    },
+                    {
+                        "title": "Medical College Admission Test (MCAT)",
+                        "description": "Prepare for and take the MCAT exam",
+                        "substeps": [
+                            "3-6 months of intensive preparation",
+                            "Take practice tests regularly",
+                            "Achieve competitive score (510+ for top schools)",
+                            "Apply to medical schools"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Medical_College_Admission_Test",
+                        "completed": false
+                    },
+                    {
+                        "title": "Medical School",
+                        "description": "Complete Doctor of Medicine (MD) program",
+                        "substeps": [
+                            "Years 1-2: Basic science coursework",
+                            "Years 3-4: Clinical rotations",
+                            "Pass USMLE Step 1 and Step 2 exams",
+                            "Choose medical specialty"
+                        ],
+                        "timeframe": "4 years",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Medical_school",
+                        "completed": false
+                    },
+                    {
+                        "title": "Residency Program",
+                        "description": "Complete specialized training in chosen field",
+                        "substeps": [
+                            "Match to residency program through NRMP",
+                            "3-7 years of supervised practice",
+                            "Pass USMLE Step 3 exam",
+                            "Complete residency requirements"
+                        ],
+                        "timeframe": "3-7 years",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Residency_(medicine)",
+                        "completed": false
+                    },
+                    {
+                        "title": "Board Certification",
+                        "description": "Become certified in medical specialty",
+                        "substeps": [
+                            "Complete residency program",
+                            "Pass specialty board exams",
+                            "Obtain state medical license",
+                            "Apply for hospital privileges"
+                        ],
+                        "timeframe": "1 year post-residency",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Board_certification",
+                        "completed": false
+                    },
+                    {
+                        "title": "Fellowship (Optional)",
+                        "description": "Subspecialty training for advanced practice",
+                        "substeps": [
+                            "1-3 years of additional training",
+                            "Gain expertise in subspecialty",
+                            "Research and publish in field",
+                            "Network with specialists"
+                        ],
+                        "timeframe": "1-3 years",
+                        "importance": "Optional",
+                        "link": "https://en.wikipedia.org/wiki/Fellowship_(medicine)",
+                        "completed": false
+                    },
+                    {
+                        "title": "Begin Medical Practice",
+                        "description": "Start career as attending physician",
+                        "substeps": [
+                            "Join practice or hospital staff",
+                            "Establish patient base",
+                            "Continue medical education",
+                            "Maintain board certification"
+                        ],
+                        "timeframe": "Ongoing",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Physician",
+                        "completed": false
+                    }
+                ]
+            },
+            "data scientist": {
+                "mainPath": "Data Scientist",
+                "relatedPaths": [
+                    "Machine Learning Engineer",
+                    "Data Analyst",
+                    "Business Intelligence Analyst",
+                    "Data Engineer",
+                    "AI Researcher"
+                ],
+                "milestones": [
+                    {
+                        "title": "Mathematics Foundation",
+                        "description": "Build strong mathematical background",
+                        "substeps": [
+                            "Linear algebra",
+                            "Calculus",
+                            "Probability and statistics",
+                            "Discrete mathematics"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Mathematics",
+                        "completed": true
+                    },
+                    {
+                        "title": "Programming Skills",
+                        "description": "Learn programming languages for data science",
+                        "substeps": [
+                            "Python (NumPy, Pandas, Matplotlib)",
+                            "R programming",
+                            "SQL for databases",
+                            "Basic shell scripting"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Python_(programming_language)",
+                        "completed": true
+                    },
+                    {
+                        "title": "Data Wrangling",
+                        "description": "Learn to collect, clean, and process data",
+                        "substeps": [
+                            "Web scraping techniques",
+                            "APIs for data collection",
+                            "Data cleaning with Pandas",
+                            "Handling missing data"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Data_wrangling",
+                        "completed": false
+                    },
+                    {
+                        "title": "Exploratory Data Analysis",
+                        "description": "Learn to analyze and visualize data",
+                        "substeps": [
+                            "Statistical analysis techniques",
+                            "Data visualization (Matplotlib, Seaborn, Tableau)",
+                            "Storytelling with data",
+                            "Creating dashboards"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Exploratory_data_analysis",
+                        "completed": false
+                    },
+                    {
+                        "title": "Machine Learning",
+                        "description": "Learn machine learning algorithms",
+                        "substeps": [
+                            "Supervised learning (regression, classification)",
+                            "Unsupervised learning (clustering, dimensionality reduction)",
+                            "Model evaluation techniques",
+                            "Scikit-learn library"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Machine_learning",
+                        "completed": false
+                    },
+                    {
+                        "title": "Deep Learning",
+                        "description": "Study neural networks and deep learning",
+                        "substeps": [
+                            "Neural network fundamentals",
+                            "TensorFlow/PyTorch frameworks",
+                            "Computer vision/NLP applications",
+                            "Model deployment"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Deep_learning",
+                        "completed": false
+                    },
+                    {
+                        "title": "Big Data Technologies",
+                        "description": "Learn to work with large datasets",
+                        "substeps": [
+                            "Hadoop/Spark ecosystems",
+                            "Distributed computing",
+                            "Cloud platforms (AWS, GCP, Azure)",
+                            "Database systems"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "Medium",
+                        "link": "https://en.wikipedia.org/wiki/Big_data",
+                        "completed": false
+                    },
+                    {
+                        "title": "Real-world Projects",
+                        "description": "Apply skills to practical problems",
+                        "substeps": [
+                            "Kaggle competitions",
+                            "Personal projects",
+                            "Open source contributions",
+                            "Freelance work"
+                        ],
+                        "timeframe": "6-12 months",
+                        "importance": "High",
+                        "link": "https://en.wikipedia.org/wiki/Project",
+                        "completed": false
+                    },
+                    {
+                        "title": "Job Preparation",
+                        "description": "Prepare for data science roles",
+                        "substeps": [
+                            "Build portfolio",
+                            "Practice case studies",
+                            "Prepare for technical interviews",
+                            "Network with professionals"
+                        ],
+                        "timeframe": "3-6 months",
+                        "importance": "Critical",
+                        "link": "https://en.wikipedia.org/wiki/Job_hunting",
+                        "completed": false
+                    }
+                ]
+            }
+        };
+
+        // DOM Elements
+        const searchInput = document.getElementById('searchInput');
+        const searchBtn = document.getElementById('searchBtn');
+        const relatedPaths = document.getElementById('relatedPaths');
+        const roadmapContainer = document.getElementById('roadmapContainer');
+        const milestones = document.getElementById('milestones');
+        const loading = document.getElementById('loading');
+        const errorMessage = document.getElementById('errorMessage');
+        const progressFill = document.getElementById('progressFill');
+        const progressText = document.getElementById('progressText');
+        
+        // Track visible milestones for progress calculation
+        let totalMilestones = 0;
+        let visibleMilestones = 0;
+        
+        // Create stars background
+        function createStars() {
+            const stars = document.querySelector('.stars');
+            const count = 150;
+            
+            for (let i = 0; i < count; i++) {
+                const star = document.createElement('div');
+                star.className = 'star';
+                
+                // Random position
+                const x = Math.random() * 100;
+                const y = Math.random() * 100;
+                
+                // Random size
+                const size = Math.random() * 2;
+                
+                // Random duration
+                const duration = 3 + Math.random() * 5;
+                
+                star.style.left = `${x}%`;
+                star.style.top = `${y}%`;
+                star.style.width = `${size}px`;
+                star.style.height = `${size}px`;
+                star.style.animationDuration = `${duration}s`;
+                star.style.animationDelay = `${Math.random() * duration}s`;
+                
+                stars.appendChild(star);
+            }
+        }
+        
+        // Mock API function to fetch roadmap data
+        async function fetchRoadmap(query) {
+            // Simulate API delay
+            await new Promise(resolve => setTimeout(resolve, 800));
+            
+            const normalizedQuery = query.toLowerCase().trim();
+            
+            // Check if we have data for this career
+            if (careerData[normalizedQuery]) {
+                return {
+                    success: true,
+                    data: careerData[normalizedQuery]
+                };
+            }
+            
+            // For unknown careers, generate a generic response with more detail
+            return {
+                success: true,
+                data: {
+                    mainPath: query,
+                    relatedPaths: [
+                        `${query} Specialist`,
+                        `Senior ${query}`,
+                        `${query} Manager`,
+                        `${query} Consultant`,
+                        `Entry-Level ${query}`
+                    ],
+                    milestones: [
+                        {
+                            title: "Education Requirements",
+                            description: "Complete necessary education for this field",
+                            substeps: [
+                                "Research degree requirements",
+                                "Identify accredited programs",
+                                "Complete prerequisite courses",
+                                "Maintain strong GPA"
+                            ],
+                            timeframe: "2-4 years",
+                            importance: "Critical",
+                            link: "https://en.wikipedia.org/wiki/Education",
+                            completed: true
+                        },
+                        {
+                            title: "Fundamental Skills",
+                            description: "Master core skills needed for this career",
+                            substeps: [
+                                "Identify key technical skills",
+                                "Learn industry-standard tools",
+                                "Develop soft skills (communication, teamwork)",
+                                "Build portfolio of small projects"
+                            ],
+                            timeframe: "6-12 months",
+                            importance: "High",
+                            link: "https://en.wikipedia.org/wiki/Skill",
+                            completed: false
+                        },
+                        {
+                            title: "Certifications",
+                            description: "Obtain relevant professional certifications",
+                            substeps: [
+                                "Research valued certifications",
+                                "Prepare for certification exams",
+                                "Complete required training",
+                                "Maintain certifications with CE credits"
+                            ],
+                            timeframe: "3-6 months",
+                            importance: "Medium",
+                            link: "https://en.wikipedia.org/wiki/Professional_certification",
+                            completed: false
+                        },
+                        {
+                            title: "Practical Experience",
+                            description: "Gain hands-on experience in the field",
+                            substeps: [
+                                "Internships or apprenticeships",
+                                "Freelance or volunteer work",
+                                "Personal projects",
+                                "Entry-level positions"
+                            ],
+                            timeframe: "6-24 months",
+                            importance: "Critical",
+                            link: "https://en.wikipedia.org/wiki/Experience",
+                            completed: false
+                        },
+                        {
+                            title: "Networking",
+                            description: "Build professional network in the industry",
+                            substeps: [
+                                "Attend industry events",
+                                "Join professional associations",
+                                "Connect with mentors",
+                                "Build online presence (LinkedIn)"
+                            ],
+                            timeframe: "Ongoing",
+                            importance: "High",
+                            link: "https://en.wikipedia.org/wiki/Professional_network",
+                            completed: false
+                        },
+                        {
+                            title: "Job Search",
+                            description: "Prepare for and execute job search",
+                            substeps: [
+                                "Polish resume and cover letter",
+                                "Prepare for interviews",
+                                "Research companies and roles",
+                                "Negotiate job offers"
+                            ],
+                            timeframe: "3-6 months",
+                            importance: "Critical",
+                            link: "https://en.wikipedia.org/wiki/Job_hunting",
+                            completed: false
+                        },
+                        {
+                            title: "Career Growth",
+                            description: "Plan for long-term career development",
+                            substeps: [
+                                "Set 1-year, 5-year goals",
+                                "Identify specialization areas",
+                                "Pursue advanced education if needed",
+                                "Seek leadership opportunities"
+                            ],
+                            timeframe: "Ongoing",
+                            importance: "High",
+                            link: "https://en.wikipedia.org/wiki/Career_development",
+                            completed: false
+                        }
+                    ]
+                }
+            };
+        }
+        
+        // Render related paths as buttons
+        function renderRelatedPaths(paths) {
+            relatedPaths.innerHTML = '';
+            
+            paths.forEach(path => {
+                const button = document.createElement('button');
+                button.className = 'related-path-btn';
+                button.textContent = path;
+                button.addEventListener('click', () => {
+                    searchInput.value = path;
+                    searchRoadmap();
+                });
+                
+                relatedPaths.appendChild(button);
+            });
+        }
+        
+        // Enhanced function to render milestones with substeps
+        function renderMilestones(milestoneList) {
+            milestones.innerHTML = '';
+            totalMilestones = milestoneList.length;
+            visibleMilestones = 0;
+            
+            milestoneList.forEach((milestone, index) => {
+                const milestoneElement = document.createElement('div');
+                milestoneElement.className = 'milestone';
+                milestoneElement.dataset.index = index;
+                
+                const milestoneContent = document.createElement('div');
+                milestoneContent.className = 'milestone-content';
+                
+                if (milestone.completed) {
+                    milestoneContent.style.borderLeft = '4px solid #4facfe';
+                }
+                
+                const milestonePin = document.createElement('div');
+                milestonePin.className = 'milestone-pin';
+                
+                if (milestone.completed) {
+                    milestonePin.style.background = 'linear-gradient(90deg, #0bff99 0%, #00ffd5 100%)';
+                }
+                
+                const title = document.createElement('h3');
+                title.className = 'milestone-title';
+                title.textContent = milestone.title;
+                
+                const description = document.createElement('p');
+                description.className = 'milestone-description';
+                description.textContent = milestone.description;
+                
+                milestoneContent.appendChild(title);
+                milestoneContent.appendChild(description);
+                
+                // Add substeps if they exist
+                if (milestone.substeps && milestone.substeps.length > 0) {
+                    const substepsContainer = document.createElement('div');
+                    substepsContainer.className = 'milestone-substeps';
+                    
+                    milestone.substeps.forEach(substep => {
+                        const substepElement = document.createElement('div');
+                        substepElement.className = 'milestone-substep';
+                        substepElement.textContent = substep;
+                        substepsContainer.appendChild(substepElement);
+                    });
+                    
+                    milestoneContent.appendChild(substepsContainer);
+                }
+                
+                // Add timeframe if it exists
+                if (milestone.timeframe) {
+                    const timeframe = document.createElement('div');
+                    timeframe.className = 'milestone-timeframe';
+                    timeframe.textContent = `⏳ ${milestone.timeframe}`;
+                    milestoneContent.appendChild(timeframe);
+                }
+                
+                // Add importance if it exists
+                if (milestone.importance) {
+                    const importance = document.createElement('div');
+                    importance.className = 'milestone-importance';
+                    importance.textContent = `⭐ ${milestone.importance}`;
+                    milestoneContent.appendChild(importance);
+                }
+                
+                const link = document.createElement('a');
+                link.className = 'milestone-link';
+                link.href = milestone.link;
+                link.target = '_blank';
+                link.textContent = 'Learn More';
+                
+                milestoneContent.appendChild(link);
+                milestoneElement.appendChild(milestoneContent);
+                milestoneElement.appendChild(milestonePin);
+                
+                milestones.appendChild(milestoneElement);
+                
+                // Stagger animation
+                setTimeout(() => {
+                    milestoneElement.classList.add('visible');
+                }, index * 200);
+            });
+            
+            window.addEventListener('scroll', checkMilestoneVisibility);
+            checkMilestoneVisibility();
+        }
+        
+        // Check if milestones are in viewport and add animation class
+        function checkMilestoneVisibility() {
+            const milestoneElements = document.querySelectorAll('.milestone');
+            visibleMilestones = 0;
+            
+            milestoneElements.forEach(milestone => {
+                const rect = milestone.getBoundingClientRect();
+                const isVisible = (
+                    rect.top < window.innerHeight && 
+                    rect.bottom > 0
+                );
+                
+                if (isVisible) {
+                    milestone.classList.add('visible');
+                    
+                    if (rect.top < window.innerHeight / 1.5) {
+                        visibleMilestones++;
+                    }
+                }
+            });
+            
+            updateProgress();
+        }
+        
+        // Update progress bar based on visible milestones
+        function updateProgress() {
+            if (totalMilestones === 0) return;
+            
+            const percent = Math.min(Math.round((visibleMilestones / totalMilestones) * 100), 100);
+            progressFill.style.width = `${percent}%`;
+            progressText.textContent = `${percent}% Complete`;
+        }
+        
+        // Search for roadmap
+        async function searchRoadmap() {
+            const query = searchInput.value.trim();
+            
+            if (!query) {
+                errorMessage.textContent = "Please enter a career path to search";
+                errorMessage.style.display = 'block';
+                return;
+            }
+            
+            // Reset and show loading state
+            errorMessage.style.display = 'none';
+            roadmapContainer.style.display = 'none';
+            relatedPaths.innerHTML = '';
+            loading.style.display = 'block';
+            
+            try {
+                // Call the mock API function
+                const response = await fetchRoadmap(query);
+                
+                // Hide loading state
+                loading.style.display = 'none';
+                
+                if (response.success) {
+                    // Show roadmap container
+                    roadmapContainer.style.display = 'block';
+                    
+                    // Render related paths
+                    renderRelatedPaths(response.data.relatedPaths);
+                    
+                    // Render milestones with all details
+                    renderMilestones(response.data.milestones);
+                    
+                    // Smooth scroll to roadmap
+                    setTimeout(() => {
+                        roadmapContainer.scrollIntoView({ behavior: 'smooth' });
+                    }, 100);
+                } else {
+                    // Show error message
+                    errorMessage.textContent = response.error || "No career roadmap found";
+                    errorMessage.style.display = 'block';
+                }
+            } catch (error) {
+                // Handle error
+                loading.style.display = 'none';
+                errorMessage.textContent = 'An error occurred. Please try again.';
+                errorMessage.style.display = 'block';
+                console.error('Error:', error);
+            }
+        }
+        
+        // Event listeners
+        searchBtn.addEventListener('click', searchRoadmap);
+        
+        searchInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                searchRoadmap();
+            }
         });
+        
+        // Add scroll event listener for progress updates
+        window.addEventListener('scroll', checkMilestoneVisibility);
+        
+        // Initialize stars background
+        createStars();
+        
+        // Add some initial suggestions
+        const initialSuggestions = [
+            'Software Engineer', 
+            'Doctor', 
+            'Data Scientist',
+            'UX Designer',
+            'Product Manager',
+            'Cybersecurity Analyst'
+        ];
+        renderRelatedPaths(initialSuggestions);
 
-        const percentage = Math.min(100, lines.length * 5);
-        document.getElementById("progressFill").style.width = `${percentage}%`;
-        document.getElementById("progressText").innerText = `${percentage}% Complete`;
-
-      } catch (err) {
-        console.error("Error fetching roadmap:", err);
-        loading.style.display = "none";
-        milestones.innerHTML = "<p>Error fetching roadmap. Please try again later.</p>";
-      }
-    }
-
-    document.getElementById("searchBtn").addEventListener("click", searchRoadmap);
-    searchInput.addEventListener("keypress", (e) => {
-      if (e.key === "Enter") {
-        searchRoadmap();
-      }
-    });
-  </script>
+        // Add a reset button functionality
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                searchInput.value = '';
+                roadmapContainer.style.display = 'none';
+                errorMessage.style.display = 'none';
+                renderRelatedPaths(initialSuggestions);
+            }
+        });
+    </script>
 </body>
 </html>
