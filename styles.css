@@ -1,31 +1,28 @@
+
 body {
     font-family: Arial, sans-serif;
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh;
+    flex-direction: column;
+    padding: 2rem;
     background-color: #f0f0f0;
 }
-
 .container {
     text-align: center;
 }
-
 #searchInput {
     padding: 10px;
     width: 300px;
     margin-right: 10px;
 }
-
 #searchBtn {
     padding: 10px 20px;
 }
-
 #roadmapContainer {
     margin-top: 20px;
     width: 80%;
 }
-
 #progressBar {
     width: 80%;
     height: 20px;
@@ -34,10 +31,17 @@ body {
     border-radius: 10px;
     overflow: hidden;
 }
-
 #progressFill {
     height: 100%;
     background-color: #4caf50;
     width: 0;
     transition: width 0.5s;
+}
+.milestone {
+    margin: 10px 0;
+    padding: 10px;
+    background-color: white;
+    border-left: 4px solid #4caf50;
+    text-align: left;
+    border-radius: 5px;
 }
