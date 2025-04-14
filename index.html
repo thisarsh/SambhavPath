@@ -1,20 +1,23 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
+    <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SambhavPath - Career Roadmap Explorer</title>
     <link rel="stylesheet" href="styles.css">
 </head>
 <body>
     <div class="container">
-        <input type="text" id="searchInput" placeholder="Search a career path...">
+        <h1>SambhavPath 🚀</h1>
+        <p>Enter a career goal and explore your personalized AI-generated roadmap!</p>
+        <input type="text" id="searchInput" placeholder="e.g. Ethical Hacker, IAS Officer">
         <button id="searchBtn">Search</button>
+        <div id="errorMessage" style="color: red; margin-top: 20px;"></div>
         <div id="roadmapContainer"></div>
         <div id="progressBar">
             <div id="progressFill"></div>
         </div>
-        <div id="errorMessage" style="color: red; margin-top: 20px;"></div>
     </div>
     <script src="script.js"></script>
 </body>
