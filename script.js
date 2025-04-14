@@ -21,7 +21,7 @@ async function searchRoadmap() {
             headers: {
                 'Authorization': `Bearer ${apiKey}`,
                 'Content-Type': 'application/json',
-                'HTTP-Referer': 'https://your-netlify-site.netlify.app',  // 🔁 Replace with your Netlify URL
+                'HTTP-Referer': 'https://sambhav0path.netlify.app', // ✅ Update with your real domain
                 'X-Title': 'SambhavPath'
             },
             body: JSON.stringify({
